@@ -1,40 +1,121 @@
 #include "labirinto.h"
+#include "listaencadeada.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ERRO -1
-#define COL 35
+#define ERROARQ -1
+#define ERROALLOC -2
+#define COL 36
 #define LIN 10
 
+
 int main(){
-	char lab[LIN][COL];
-	char **labaux;
-	labaux[0]=lab[0];
-	labaux[1]=lab[1];
-	labaux[2]=lab[2];
-	labaux[3]=lab[3];
-	labaux[4]=lab[4];
-	labaux[5]=lab[5];
-	labaux[6]=lab[6];
-	labaux[7]=lab[7];
-	labaux[8]=lab[8];
-	labaux[9]=lab[9];
-	carga("labirinto_test_1.txt", labaux);
-	return 0;
+    char **lab;
+    int i,j;
+    ListaEncadeada *lista;
+    int **vertices;
+    int cont=1;
+
+    lab = (char**)malloc(LIN*sizeof(char*));
+    if(lab == NULL)return ERROALLOC;    
+    vertices = (int**)malloc(LIN*sizeof(int*));
+    if(vertices == NULL)return ERROALLOC;
+    for(i=0;i<LIN;i++){
+        lab[i]=(char*)malloc(COL*sizeof(char));
+        if(lab[i]==NULL)return ERROALLOC;
+        vertices[i]=(int*)malloc(COL*sizeof(int));
+        if(vertices[i]==NULL)return ERROALLOC;
+
+    }
+    carga("labirinto_test_1", lab);
+    for(i=0;i<LIN;i++){
+        for(j=0;j<COL;j++){
+            printf("%c ",lab[i][j]);
+            vertices[i][j]=cont;
+            cont++;
+        }
+        printf("\n");
+    }
+    return 0;
 }
 
 int carga(char *nomeArquivo,char **lab){
-   int i;
-   FILE *arq = fopen(nomeArquivo,"r");
-   if(arq==NULL){
-   		printf("Falha ao ler o arquivo!\n");
-   		return ERRO;
-   }
-   for(i=0;i<LIN;i++){
-   		fgets(lab[i], COL*sizeof(char), arq);
-   		printf("lab %s\n",lab[i]);
-   }
+    int i=0,j;
+    FILE *arq = fopen(nomeArquivo,"r");
+    if(arq==NULL){
+        printf("Falha ao ler o arquivo!\n");
+        return ERROARQ;
+    }
+    printf("%i\n",LIN);
+    for(i=0;i<LIN;i++){
+        for(j=0;j<COL;j++){
+            fscanf(arq,"%c",&lab[i][j]);
+        }
+    } 
+    return 1 ;
+}
+    
+int *caminhoMinimo(char **labirinto){
+    ListaEncadeada **listas;
+    int *caminho;
+    int inicio_x,inicio_y,fim_x,fim_y;
 
-   int num_linhas_lidas = 0;
-   return num_linhas_lidas;
+    listas=(ListaEncadeada**)malloc(sizeof(ListaEncadeada*));
+    if(listas==NULL)return 0;
+    posInicio(&inicio_x,&inicio_y,labirinto);
+    posSaida(&fim_x,&fim_y,labirinto);
+    
+    
+
+    return caminho;
+}
+
+int posInicio(int *x, int *y, char **lab){
+    int i,j;
+    for(i=0;i<LIN;i++){
+        for(j=0;j<COL;j++){
+            if(lab[i][j]=='S'){
+                *x=i;
+                *y=j;
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int posSaida(int *x, int *y, char **lab){
+    int i,j;
+    for(i=0;i<LIN;i++){
+        for(j=0;j<COL;j++){
+            if(lab[i][j]=='E'){
+                *x=i;
+                *y=j;
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int pCima(int x, int y, char **lab, int **v){
+    if((x-1) < 0 | lab[x-1][y]=='#')return 0;
+    else return v[x-1][y];
+}
+
+int pBaixo(int x, int y, char **lab, int **v){
+    if((x+1) > LIN-1 | lab[x+1][y]=='#')return 0;
+    else return v[x-1][y];
+}
+
+int pDireita(int x, int y, char **lab, int **v){
+    if((y+1) > COL-1 | lab[x][y+1]=='#')return 0;
+    else return v[x][y+1];
+}
+
+int pEsquerda(int x, int y, char **lab, int **v){
+    if((y-1) < 0 | lab[x][y-1]=='#')return 0;
+    else return v[x][y-1];
 }
