@@ -26,12 +26,6 @@ int main(){
         }
         printf("\n");
     }
-    for(i=0;i<LIN;i++){
-        for(j=0;j<COL;j++){
-            printf("%c ",lab[i][j]);
-        }
-        printf("\n");
-    }
     caminhoMinimo(lab,vertices);
 
     return 0;
@@ -81,7 +75,7 @@ ListaEncadeada *caminhoInicial(ListaEncadeada **mapa, int **vet, char **lab){
 int pertenceALista(ListaEncadeada *lista, int elemento){
     Elemento *e;
     
-    //printf("elemento %i\n",elemento);
+    printf("elemento %i\n",elemento);
     e = lista->cabeca;
     while(e!=NULL){
         if(e->info == elemento)return 1;
@@ -126,7 +120,7 @@ ListaEncadeada **mapeamento(int **vertices){
             if(elemento!=0)adicionaNoFim(mapa[verticeAtual],elemento);
             elemento=pDireita(i,j,vertices);
             if(elemento!=0)adicionaNoFim(mapa[verticeAtual],elemento);
-            //imprime_lista(mapa[verticeAtual]); 
+            imprime_lista(mapa[verticeAtual]); 
             verticeAtual++; 
         }
     }
@@ -210,7 +204,7 @@ int pCima(int x, int y, int **v){
 
 int pBaixo(int x, int y,  int **v){
     if((x+1) > LIN-1 | v[x+1][y]==INALCANCAVEL)return 0;
-    else return v[x+1][y];
+    else return v[x-1][y];
 }
 
 int pDireita(int x, int y, int **v){

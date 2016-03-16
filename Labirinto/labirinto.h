@@ -26,16 +26,20 @@ typedef struct{
 //protótipo da funções
 ListaEncadeada *criaLista();
 int estah_vazia_listaenc(ListaEncadeada *lista);
+int pertenceALista(ListaEncadeada *lista, int elemento);
 void destroi_lista(ListaEncadeada *lista);
+ListaEncadeada *caminhoInicial(ListaEncadeada **mapa, int **vet, char **lab);
 int adicionaNoInicio(ListaEncadeada *lista, int dados);
 int adicionaNoFim(ListaEncadeada *lista, int dados);
+int removeElemento(ListaEncadeada *lista);
 void imprime_lista(ListaEncadeada *lista);
 int carga(char *nomeArquivo, char **lab, int **vertices);
-int* caminhoMinimo(char **labirinto, int **vertices);
+ListaEncadeada *caminhoMinimo(char **labirinto, int **vertices);
 int qtdVertices(int **vertices);
+int procuraNoMapa(ListaEncadeada **mapa, int elemento, int qV);
 //ListaEncadeada** mapeamento(int **vertices);
-int posInicio(int *x, int *y, char **lab);
-int posSaida(int *x, int *y, char **lab);
+int posInicio(int **vet, char **lab);
+int posSaida(int **vet, char **lab);
 int pCima(int x, int y, int **v);
 int pBaixo(int x, int y,  int **v);
 int pEsquerda(int x, int y,  int **v);
