@@ -2,12 +2,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
-int main(){
+int main(int argc, char **argv){
     char **lab;
     int i,j;
-    int **vertices; 
+    int **vertices;
+    char c;
+    FILE *arq;
 
+    if(argv[1]==NULL){
+        printf("Erro! Arquivo de entrada inexistente.\n");
+        printf("./labirinto \"arquivo de entrada\"\n");
+        exit(0);
+    }else nomeArquivo=argv[1];
+    printf("%s\n",nomeArquivo);
+
+    arq = fopen(nomeArquivo,"r");
+    if(arq==NULL){
+        printf("Falha ao ler o arquivo!\n");
+        return ERROARQ;
+    }
+
+    while((fscanf(arq,"%c",&c)) != EOF){
+        if(c=='\n')LIN++;
+        if(LIN==0)COL++;
+        //printf("%c %i %i\n",c,LIN,COL); 
+    }
+    fclose(arq);
+    //printf("%i %i\n",LIN,COL); 
     lab = (char**)malloc(LIN*sizeof(char*));
     if(lab == NULL)return ERROALLOC;    
     vertices = (int**)malloc(LIN*sizeof(int*));
@@ -19,7 +42,9 @@ int main(){
         if(vertices[i]==NULL)return ERROALLOC;
 
     }
-    carga("l_1.in", lab, vertices);
+
+    carga(lab, vertices);
+
     for(i=0;i<LIN;i++){
         for(j=0;j<COL;j++){
             printf("%-3i ",vertices[i][j]);
@@ -32,6 +57,7 @@ int main(){
         }
         printf("\n");
     }
+
     caminhoMinimo(lab,vertices);
 
     return 0;
@@ -40,47 +66,89 @@ int main(){
 ListaEncadeada *caminhoInicial(ListaEncadeada **mapa, int **vet, char **lab){
     ListaEncadeada *caminho;
     ListaEncadeada *pilha;
-    int tP,indice;
+    ListaEncadeada *forkk;
+    int tP,indice,inicio,saida,i;
     int qV=qtdVertices(vet);
     Elemento *elemento;
+    int addPilha,qtdForkk;
+    int tForkk;
 
     pilha = criaLista();
     caminho = criaLista();
+    forkk = criaLista();
 
-    int inicio = posInicio(vet,lab);
-    int saida = posSaida(vet,lab);
-
+    inicio = posInicio(vet,lab);
+    saida = posSaida(vet,lab);
     if(inicio==0 | saida==0)exit(0);
 
     adicionaNoInicio(pilha,inicio);
     while(1){
-        tP = removeElemento(pilha);
-        if(tP==saida){
-            adicionaNoFim(caminho,tP);
-            break;
-        }
+        addPilha=0;
+        qtdForkk=0;
+        tP = removeElementoInicio(pilha);
+        //printf("Pilha = ");
+        //imprime_lista(pilha); 
         indice = procuraNoMapa(mapa,tP,qV);
         elemento = mapa[indice]->cabeca;
         while(elemento!=NULL){
-            if(!pertenceALista(pilha,elemento->info) && !pertenceALista(caminho,elemento->info)){
+            if(!pertenceALista(pilha,elemento->info) && !pertenceALista(caminho,elemento->info) && elemento->info != tP){
                 adicionaNoInicio(pilha,elemento->info);
-            }
+                addPilha++;
+            } 
             elemento = elemento->proximo;
         }
-        adicionaNoFim(caminho,tP);
+         if(tP==saida){
+            adicionaNoFim(caminho,tP);
+            break;
+        }else if(addPilha>0){
+            adicionaNoFim(caminho,tP);
+            if(addPilha>1){
+                for(i=0;i<addPilha-1;i++)adicionaNoInicio(forkk,tP);
+            }
+        }else if(forkk->tamanho>0){
+            tForkk = removeElementoInicio(forkk);
+            //printf("%i\n",)removeDoFimAte(caminho,tForkk);   
+            removeDoFimAte(caminho,tForkk);
+            //imprime_lista(caminho); 
+        }
+        
         if(estah_vazia_listaenc(pilha)){
             printf("Não existe Caminho\n");
             exit(0);
-        }
-        //imprime_lista(pilha);    
+        } 
     } 
     imprime_lista(caminho);
     return caminho;
 }
 
+int removeDoFimAte(ListaEncadeada *lista, int forkk){
+    int elemento;
+    Elemento *f;
+
+    if(estah_vazia_listaenc(lista)){
+        printf("Erro! Não há element na lista.\n ");
+        //exit(0);
+    }
+    if(lista->tamanho==1)return removeElementoInicio(lista);
+    Elemento *e = lista->cabeca;
+    while(e->proximo!=NULL){
+        e=e->proximo;
+    }
+    while(e->info!=forkk){
+        e->anterior->proximo = NULL;
+        f=e->anterior;
+        free(e);
+        e=f;
+        lista->tamanho--;
+    }
+    elemento = e->info;
+
+    return elemento;
+}
+
 int pertenceALista(ListaEncadeada *lista, int elemento){
     Elemento *e;
-    
+
     //printf("elemento %i\n",elemento);
     e = lista->cabeca;
     while(e!=NULL){
@@ -112,14 +180,11 @@ ListaEncadeada **mapeamento(int **vertices){
 
     for(i=0;i<LIN;i++){
         for(j=0;j<COL;j++){ 
-            if(vertices[i][j]==INALCANCAVEL)continue;
-            //printf("Mapeamento\n");
+            if(vertices[i][j]==INALCANCAVEL)continue; 
             mapa[verticeAtual]=criaLista();
             adicionaNoFim(mapa[verticeAtual],vertices[i][j]);
-
             elemento=pCima(i,j,vertices);
             if(elemento!=0)adicionaNoFim(mapa[verticeAtual],elemento);
-
             elemento=pBaixo(i,j,vertices);
             if(elemento!=0)adicionaNoFim(mapa[verticeAtual],elemento);
             elemento=pEsquerda(i,j,vertices);
@@ -130,6 +195,7 @@ ListaEncadeada **mapeamento(int **vertices){
             verticeAtual++; 
         }
     }
+
     //imprime_lista(mapa[0]);
     return mapa;
 }
@@ -142,19 +208,23 @@ ListaEncadeada *caminhoMinimo(char **labirinto,int **vertices){
     int qV;
 
     mapa = mapeamento(vertices);
+
     caminho = caminhoInicial(mapa,vertices,labirinto); 
 
     return caminho;
 }
 
-int carga(char *nomeArquivo,char **lab, int **vertices){
-    int i=0,j;
+int carga(char **lab, int **vertices){
+    int i=0,j=0;
     int cont=1;
     FILE *arq = fopen(nomeArquivo,"r");
     if(arq==NULL){
         printf("Falha ao ler o arquivo!\n");
         return ERROARQ;
     }
+
+    //printf("%i %i\n",LIN,COL);
+    rewind(arq);
     for(i=0;i<LIN;i++){
         for(j=0;j<COL;j++){
             fscanf(arq,"%c",&lab[i][j]);
@@ -204,22 +274,26 @@ int posSaida(int **vet, char **lab){
 }
 
 int pCima(int x, int y, int **v){
-    if((x-1) < 0 | v[x-1][y]==INALCANCAVEL)return 0;
+    if((x-1) < 0) return 0; 
+    if(v[x-1][y]==INALCANCAVEL) return 0;
     else return v[x-1][y];
 }
 
 int pBaixo(int x, int y,  int **v){
     if((x+1) > LIN-1 | v[x+1][y]==INALCANCAVEL)return 0;
+    if(v[x+1][y]==INALCANCAVEL)return 0;
     else return v[x+1][y];
 }
 
 int pDireita(int x, int y, int **v){
-    if((y+1) > COL-1 | v[x][y+1]==INALCANCAVEL)return 0;
+    if((y+1) > COL-1)return 0;
+    if(v[x][y+1]==INALCANCAVEL)return 0;
     else return v[x][y+1];
 }
 
 int pEsquerda(int x, int y, int **v){
-    if((y-1) < 0 | v[x][y-1]==INALCANCAVEL)return 0;
+    if((y-1) < 0)return 0;
+    if(v[x][y-1]==INALCANCAVEL)return 0;
     else return v[x][y-1];
 }
 
@@ -278,6 +352,10 @@ int adicionaNoInicio(ListaEncadeada *lista, int dados){
     if(novo!=NULL){
         novo->info = dados;
         novo->proximo = lista->cabeca;
+        novo->anterior = NULL;
+        if(novo->proximo!=NULL){
+            novo->proximo->anterior = novo;
+        }
         lista->cabeca = novo;
         lista->tamanho++;
         return lista->tamanho;
@@ -287,7 +365,7 @@ int adicionaNoInicio(ListaEncadeada *lista, int dados){
 
 int adicionaNoFim(ListaEncadeada *lista, int dados){
     if(estah_vazia_listaenc(lista)==1){
-        adicionaNoInicio(lista,dados);
+        return adicionaNoInicio(lista,dados);
     }else{
         Elemento *e = lista->cabeca;
         while(e->proximo!=NULL){
@@ -297,6 +375,7 @@ int adicionaNoFim(ListaEncadeada *lista, int dados){
         if(novo!=NULL){
             novo->info = dados;
             novo->proximo = NULL;
+            novo->anterior = e;
             e->proximo = novo;
             lista->tamanho++;
             return lista->tamanho;
@@ -305,18 +384,23 @@ int adicionaNoFim(ListaEncadeada *lista, int dados){
     return 0;
 }
 
-int removeElemento(ListaEncadeada *lista){
+int removeElementoInicio(ListaEncadeada *lista){
     int elemento;
     Elemento *e;
 
+    if(estah_vazia_listaenc(lista)){
+        printf("Erro! N�o há elementos a lista.\n ");
+        exit(0);
+    }
     e = lista->cabeca;
     elemento = e->info;
-    lista->cabeca = e->proximo;
-    lista->tamanho--;
+    lista->cabeca = e->proximo; 
+    if(e->proximo!=NULL)e->proximo->anterior = NULL;
+    lista->tamanho--; 
     free(e);
-
     return elemento;
 }
+
 
 void imprime_lista(ListaEncadeada *lista){
     if(lista->tamanho==0) printf("\nErro %i",ERRO_LISTA_VAZIA);

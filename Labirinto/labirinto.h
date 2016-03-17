@@ -5,16 +5,18 @@
 #define POSICAO_INEXISTENTE -2
 #define ERROARQ -3
 #define ERROALLOC -4
-#define COL 35
-#define LIN 10
 #define INALCANCAVEL -10
 
+int COL=0;
+int LIN=0;
+char *nomeArquivo;
 
 
 //define estrutura eletemnto de lista
 typedef struct elemento{
 	int info;
 	struct elemento *proximo;
+        struct elemento *anterior;
 }Elemento;
 
 //define estrutura de cabeçalho da lista
@@ -31,9 +33,10 @@ void destroi_lista(ListaEncadeada *lista);
 ListaEncadeada *caminhoInicial(ListaEncadeada **mapa, int **vet, char **lab);
 int adicionaNoInicio(ListaEncadeada *lista, int dados);
 int adicionaNoFim(ListaEncadeada *lista, int dados);
-int removeElemento(ListaEncadeada *lista);
+int removeElementoInicio(ListaEncadeada *lista);
 void imprime_lista(ListaEncadeada *lista);
-int carga(char *nomeArquivo, char **lab, int **vertices);
+int removeDoFimAte(ListaEncadeada *lista, int forkk);
+int carga(char **lab, int **vertices);
 ListaEncadeada *caminhoMinimo(char **labirinto, int **vertices);
 int qtdVertices(int **vertices);
 int procuraNoMapa(ListaEncadeada **mapa, int elemento, int qV);

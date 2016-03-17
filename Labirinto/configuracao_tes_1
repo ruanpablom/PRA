@@ -1,9 +1,0 @@
-arquivo="labirinto_test_1"
-totLinhas=10
-totColunas=36
-linEntrada=2
-colEntrada=0
-linSaida=5
-colSaida=35
-linQueijo=3
-colQUeijo=34
