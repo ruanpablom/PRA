@@ -26,6 +26,7 @@ typedef struct{
 }ListaEncadeada;
 
 //protótipo da funções
+void imprimeRatoLabirinto(char **lab, ListaEncadeada *caminho);
 ListaEncadeada *criaLista();
 int estah_vazia_listaenc(ListaEncadeada *lista);
 int pertenceALista(ListaEncadeada *lista, int elemento);

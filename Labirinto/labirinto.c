@@ -10,6 +10,7 @@ int main(int argc, char **argv){
     int **vertices;
     char c;
     FILE *arq;
+    ListaEncadeada *caminho;
 
     if(argv[1]==NULL){
         printf("Erro! Arquivo de entrada inexistente.\n");
@@ -18,6 +19,7 @@ int main(int argc, char **argv){
     }else nomeArquivo=argv[1];
     printf("%s\n",nomeArquivo);
 
+    //Verifica a quantidade de linhas e colunas do arquivo
     arq = fopen(nomeArquivo,"r");
     if(arq==NULL){
         printf("Falha ao ler o arquivo!\n");
@@ -30,7 +32,9 @@ int main(int argc, char **argv){
         //printf("%c %i %i\n",c,LIN,COL); 
     }
     fclose(arq);
-    //printf("%i %i\n",LIN,COL); 
+    //fim verificação
+
+    //Aloca memória que será utilizada 
     lab = (char**)malloc(LIN*sizeof(char*));
     if(lab == NULL)return ERROALLOC;    
     vertices = (int**)malloc(LIN*sizeof(int*));
@@ -42,25 +46,57 @@ int main(int argc, char **argv){
         if(vertices[i]==NULL)return ERROALLOC;
 
     }
+    //Fim alocação
 
     carga(lab, vertices);
-
+    
+    //imprime matriz de vertices
     for(i=0;i<LIN;i++){
         for(j=0;j<COL;j++){
             printf("%-3i ",vertices[i][j]);
         }
         printf("\n");
     }
+    //fim da impressão
+    
+    //imprime a matriz do labirinto
     for(i=0;i<LIN;i++){
         for(j=0;j<COL;j++){
             printf("%c ",lab[i][j]);
         }
         printf("\n");
     }
+    //fim da impressão da matriz labirinto
 
-    caminhoMinimo(lab,vertices);
-
+    caminho = caminhoMinimo(lab,vertices);
+    imprime_lista(caminho);
+    imprimeRatoLabirinto(lab,caminho);
     return 0;
+}
+
+void imprimeRatoLabirinto(char **lab, ListaEncadeada *caminho){
+    int i,j;
+    int pos,x,y;
+    while(!estah_vazia_listaenc(caminho)){
+        system("clear");
+        for(i=0;i<LIN;i++){
+            for(j=0;j<COL;j++){
+                printf("%c",lab[i][j]);
+            }
+            printf("\n");
+        }
+        pos=removeElementoInicio(caminho);
+        x=(pos-1)/COL;
+        y=(pos-1)%COL;
+        lab[x][y]='.';
+        if(!estah_vazia_listaenc(caminho)){ 
+            x=(caminho->cabeca->info-1)/COL;
+            y=(caminho->cabeca->info-1)%COL;
+            lab[x][y]='R';
+        }
+        sleep(1);
+
+    }
 }
 
 ListaEncadeada *caminhoInicial(ListaEncadeada **mapa, int **vet, char **lab){
@@ -117,7 +153,7 @@ ListaEncadeada *caminhoInicial(ListaEncadeada **mapa, int **vet, char **lab){
             exit(0);
         } 
     } 
-    imprime_lista(caminho);
+    //imprime_lista(caminho);
     return caminho;
 }
 
@@ -164,7 +200,7 @@ int procuraNoMapa(ListaEncadeada **mapa, int elemento, int qV){
     for(i=0;i<qV;i++){
         if(mapa[i]->cabeca->info == elemento) return i;
     }
-    printf("NÃ£o existe lista onde %i Ã©o  cabeÃ§a\n,elemento");
+    printf("Não existe lista onde %i é o cabeçaa\n",elemento);
     exit(0);
 }
 
