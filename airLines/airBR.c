@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 
 #define STR_T 100
-#define P_T 50
+#define P_T 100
 
 int main(){
     char info[STR_T];
@@ -9,6 +10,7 @@ int main(){
     FILE *arq;
     char url[] = "airlines.dat.txt";
     int c,i,j,teste=0;
+    int br=0;
 
     arq = fopen(url,"r");
     if(arq==NULL){
@@ -26,15 +28,18 @@ int main(){
         //printf("%i\n",i);
         i+=2;
         c=0;
-        for(j=i;info[j]!=',';j++){
+        for(j=i;info[j]!='"';j++){
             pais[c++] = info[j];
         }
-        j--;
-        if(teste==4)return 0;
-        pais[j]='\0';
-        pais[j-2]='\0';
-        printf("%s\n",pais);
+        pais[c]='\0';
+        if(strcmp(pais,pais)==0){
+            printf("Achou = %s\n",pais);
+            br++;
+        }
+        //if(teste==4)return 0;
+        //printf("%s\n",pais);
     }
     fclose(arq);
     return 0;
 }
+
