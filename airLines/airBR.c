@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define STR_T 100
+#define STR_T 1000
 #define P_T 100
 
 int main(){
@@ -17,7 +17,7 @@ int main(){
         printf("erro ao ler o arquivo!\n");
         return 0;
     }
-    
+
     while(fgets(info, STR_T, arq)!=NULL){
         c=0;
         teste++;
@@ -25,21 +25,21 @@ int main(){
             if(info[i]==',')c++;
             if(c==6)break;
         }
-        //printf("%i\n",i);
         i+=2;
         c=0;
         for(j=i;info[j]!='"';j++){
             pais[c++] = info[j];
         }
         pais[c]='\0';
-        if(strcmp(pais,pais)==0){
-            printf("Achou = %s\n",pais);
+        if(strcmp(pais,"Brazil")==0){
+            printf("%s\n",info);
             br++;
         }
-        //if(teste==4)return 0;
-        //printf("%s\n",pais);
+
     }
     fclose(arq);
+    printf("Quantidade = %i\n",br);
+
     return 0;
 }
 
