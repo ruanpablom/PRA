@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define STR_T 1000
+#define STR_T 500
 #define P_T 100
 
 int main(){
