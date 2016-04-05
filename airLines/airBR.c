@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define STR_T 500
+#define STR_T 300
 #define P_T 100
 
 int main(){
@@ -32,7 +32,7 @@ int main(){
         }
         pais[c]='\0';
         if(strcmp(pais,"Brazil")==0){
-            printf("%s\n",info);
+            printf("%s",info);
             br++;
         }
 
