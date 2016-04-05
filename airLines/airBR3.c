@@ -4,16 +4,15 @@
 #define MAXBUFFER 8196
 #define MAXL 1000
 #define P_T 100
-#define T_PB 6
 
 int main(){
     char buffer[MAXBUFFER+1];
     char info[MAXL];
-    char pais[T_PB+1];
+    char pais[P_T];
     FILE *arq;
     char url[] = "airlines.dat.txt";
-    int controle=0,c,i,j,teste=0,l,k,falta;
-    int m,br=0;
+    int c,i,j,teste=0,l,k,falta;
+    int br=0;
 
     arq = fopen(url,"r");
     if(arq==NULL){
@@ -24,38 +23,41 @@ int main(){
     falta=0;
     while(fread(buffer,sizeof(char),MAXBUFFER,arq)!=0){ 
         i=0;
-        j=0;
-        //printf("NewBuffer\n");
         while(1){
             buffer[MAXBUFFER+1]='\0';
-            if(!falta){
-                m=0;
-            }
+            if(!falta)j=0;
             falta=0;
-            while(buffer[i++]!='\n'){
-                m++;
-                if(i==MAXBUFFER)break;
-            } 
-            //
-            //return 0;
-            if(i==MAXBUFFER){
+
+            while(buffer[i]!='\n'){
+                info[j++]=buffer[i++];
+                //j++;
+                if(i==MAXBUFFER+1)break;
+            }
+
+            if(i==MAXBUFFER+1){
                 if(buffer[i]!='\n')falta=1;
                 break;
             }
-            memcpy(info,&buffer[j],m);
+            info[j]='\0';
+            //printf("%s\n",info);
+            //return 0;
             for(k=0;k<MAXL;k++){
                 if(info[k]==',')c++;
                 if(c==6)break;
             } 
             k+=2;
-            c=0;    
-            memcpy(pais,&info[k],sizeof(char)*T_PB);	
+            c=0; 
+            for(l=k;info[l]!='"';l++){
+                pais[c++] = info[l];
+            }
 
+            pais[c]='\0';
+            //printf("%s\n",pais);
             if(strcmp(pais,"Brazil")==0){
                 printf("%s\n",info);
                 br++;
-            }
-            j=i;
+            } 
+            i++;
             c=0;
         }
     }
@@ -65,4 +67,3 @@ int main(){
 
     return 0;
 }
-
