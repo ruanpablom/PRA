@@ -13,7 +13,7 @@ int main(){
     FILE *arq;
     char url[] = "airlines.dat.txt";
     int controle=0,c,i,j,teste=0,l,k,falta;
-    int m,br=0;
+    int m,br=0,tam;
 
     arq = fopen(url,"r");
     if(arq==NULL){
@@ -27,22 +27,29 @@ int main(){
         j=0;
         //printf("NewBuffer\n");
         while(1){
-            buffer[MAXBUFFER+1]='\0';
-            if(!falta){
-                m=0;
-            }
-            falta=0;
+            m=0;
+            buffer[MAXBUFFER+1]='\0'; 
             while(buffer[i++]!='\n'){
                 m++;
                 if(i==MAXBUFFER)break;
             } 
-            //
+            if(falta)memcpy(&info[tam],&buffer[j],m);
+            else memcpy(info,&buffer[j],m);
             //return 0;
+            //if(falta)printf("%s\n teste\n",info);
+            //memcpy(info,&buffer[j],m);
+                info[m]='\0';
             if(i==MAXBUFFER){
-                if(buffer[i]!='\n')falta=1;
+                memcpy(info,&buffer[j],m);
+                info[m]='\0';
+                if(buffer[i]!='\n'){
+                    falta=1;
+                    tam = strlen(info);
+                    //printf("%s\n teste\n %i\n",info,tam);
+                } 
                 break;
             }
-            memcpy(info,&buffer[j],m);
+            
             for(k=0;k<MAXL;k++){
                 if(info[k]==',')c++;
                 if(c==6)break;
@@ -52,11 +59,12 @@ int main(){
             memcpy(pais,&info[k],sizeof(char)*T_PB);	
 
             if(strcmp(pais,"Brazil")==0){
-                printf("%s\n",info);
+                //printf("%s\n",info);
                 br++;
-            }
-            j=i;
+            } 
             c=0;
+            j=i;
+            falta=0;
         }
     }
 

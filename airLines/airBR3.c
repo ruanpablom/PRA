@@ -24,23 +24,17 @@ int main(){
     while(fread(buffer,sizeof(char),MAXBUFFER,arq)!=0){ 
         i=0;
         while(1){
-            buffer[MAXBUFFER+1]='\0';
             if(!falta)j=0;
             falta=0;
-
             while(buffer[i]!='\n'){
                 info[j++]=buffer[i++];
-                //j++;
                 if(i==MAXBUFFER+1)break;
             }
-
             if(i==MAXBUFFER+1){
-                if(buffer[i]!='\n')falta=1;
+                if(buffer[i-1]!='\n')falta=1;
                 break;
             }
             info[j]='\0';
-            //printf("%s\n",info);
-            //return 0;
             for(k=0;k<MAXL;k++){
                 if(info[k]==',')c++;
                 if(c==6)break;
@@ -52,9 +46,8 @@ int main(){
             }
 
             pais[c]='\0';
-            //printf("%s\n",pais);
             if(strcmp(pais,"Brazil")==0){
-                printf("%s\n",info);
+//                printf("%s\n",info);
                 br++;
             } 
             i++;

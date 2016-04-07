@@ -32,7 +32,7 @@ int main(){
         }
         pais[c]='\0';
         if(strcmp(pais,"Brazil")==0){
-            printf("%s",info);
+            //printf("%s",info);
             br++;
         }
 
