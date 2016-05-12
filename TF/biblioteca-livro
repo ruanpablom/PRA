@@ -1,0 +1,9 @@
+f0fa
+'id' int(6) NOT NULL auto_increment,
+'titulo' varchar(30) NOT NULL,
+'editora' varchar(30) default NULL,
+'anoPublicacao' int(11) default NULL,
+'anoPublicacao' int(11) default NULL,
+'isbn' varchar(20) NOT NULL,
+PRIMARY KEY ('id')
+
