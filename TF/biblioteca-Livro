@@ -1,4 +1,4 @@
-f0fa
+0xF0FA
 'id' int(6) NOT NULL auto_increment,
 'titulo' varchar(30) NOT NULL,
 'editora' varchar(30) default NULL,
