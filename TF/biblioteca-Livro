@@ -6,4 +6,6 @@
 'anoPublicacao' int(11) default NULL,
 'isbn' varchar(20) NOT NULL,
 PRIMARY KEY ('id')
+%
+
 
