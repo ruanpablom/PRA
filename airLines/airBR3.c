@@ -34,7 +34,7 @@ int main(){
                 if(buffer[i-1]!='\n')falta=1;
                 break;
             }
-            info[j]='\0';
+            //info[j]='\0';
             for(k=0;k<MAXL;k++){
                 if(info[k]==',')c++;
                 if(c==6)break;
